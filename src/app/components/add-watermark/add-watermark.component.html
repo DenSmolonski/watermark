@@ -9,118 +9,124 @@
     class="setting-card"
   >
     <mat-card-content>
-      <div>
-        <mat-form-field appearance="outline">
-          <mat-label>Text</mat-label>
-          <textarea #textArea matInput type="text" rows="1"></textarea>
+      <div [formGroup]="formGroup">
+        <div *ngIf="formGroup.contains('text')">
+          <mat-form-field appearance="outline">
+            <mat-label>Text</mat-label>
+            <textarea
+              #textArea
+              matInput
+              formControlName="text"
+              type="text"
+              rows="1"
+            ></textarea>
+          </mat-form-field>
+
+          <button
+            style="max-width: 50px; margin-bottom: 10px"
+            *ngIf="hasFocus(textArea)"
+            mat-stroked-button
+          >
+            + &#169;
+          </button>
+        </div>
+
+        <div *ngIf="formGroup.contains('fill')">
+          <mat-form-field appearance="outline">
+            <mat-label>Color</mat-label>
+            <input matInput formControlName="fill" type="text" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field>
+          <mat-select
+            formControlName="fontFamily"
+            placeholder="Font"
+            #singleSelect
+          >
+            <mat-option>
+              <ngx-mat-select-search
+                formControlName="searchFontFamily"
+              ></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let font of fonts" [value]="font.id">
+              <span
+                [ngStyle]="{
+                  'font-family': font.fontFamily
+                }"
+                >{{ font.name }}</span
+              >
+            </mat-option>
+          </mat-select>
         </mat-form-field>
-      </div>
 
-      <button
-        style="max-width: 50px; margin-bottom: 10px"
-        *ngIf="hasFocus(textArea)"
-        mat-stroked-button
-      >
-        + &#169;
-      </button>
+        <div style="margin-bottom: 20px">
+          <mat-button-toggle-group formControlName="fit">
+            <mat-button-toggle value="one">&bull;</mat-button-toggle>
+            <mat-button-toggle value="two">&#8759;</mat-button-toggle>
+            <mat-button-toggle value="three">&#8281;</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
 
-      <div>
-        <mat-form-field appearance="outline">
-          <mat-label>Color</mat-label>
-          <input matInput type="text" />
-        </mat-form-field>
-      </div>
-      <!-- 
-      <mat-form-field>
-        <mat-select [formControl]="bankCtrl" placeholder="Bank" #singleSelect>
-          <mat-option>
-            <ngx-mat-select-search [formControl]="bankFilterCtrl"></ngx-mat-select-search>
-          </mat-option>
-          <mat-option *ngFor="let bank of filteredBanks | async" [value]="bank">
-            {{bank.name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field> -->
+        <div *ngIf="formGroup.contains('opacity')">
+          <label for="opacitySlider">Opacity: </label>
+          <label for="opacitySlider">{{ opacity.value }}</label>
+          <mat-slider
+            #opacity
+            aria-label="units"
+            color="primary"
+            [max]="1"
+            [min]="0"
+            [step]="0.1"
+            thumbLabel
+            formControlName="opacity"
+            aria-labelledby="opacitySlider"
+          >
+          </mat-slider>
+        </div>
 
-      <mat-form-field>
-        <mat-select placeholder="Font" #singleSelect>
-          <mat-option>
-            <ngx-mat-select-search></ngx-mat-select-search>
-          </mat-option>
-          <mat-option *ngFor="let font of fonts" [value]="font.id">
-            <span
-              [ngStyle]="{
-                'font-family': font.fontFamily
-              }"
-              >{{ font.name }}</span
-            >
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <div *ngIf="formGroup.contains('fontSize')">
+          <label for="sizeSlider">Size: </label>
+          <label for="sizeSlider">{{ size.value }}</label>
+          <mat-slider
+            #size
+            aria-label="units"
+            color="primary"
+            [max]="16"
+            [min]="0"
+            [step]="0.1"
+            thumbLabel
+            formControlName="fontSize"
+            aria-labelledby="sizeSlider"
+          >
+          </mat-slider>
+        </div>
 
-      <div style="margin-bottom: 20px">
-        <mat-button-toggle-group>
-          <mat-button-toggle value="one">&bull;</mat-button-toggle>
-          <mat-button-toggle value="two">&#8759;</mat-button-toggle>
-          <mat-button-toggle value="three">&#8281;</mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
+        <div *ngIf="formGroup.contains('rotation')">
+          <label for="rotationSlider">Rotaion: </label>
+          <label for="rotationSlider">{{ rotation.value }}</label>
+          <mat-slider
+            #rotation
+            aria-label="units"
+            color="primary"
+            [max]="360"
+            [min]="0"
+            [step]="1"
+            thumbLabel
+            formControlName="rotation"
+            aria-labelledby="rotationSlider"
+          >
+          </mat-slider>
+        </div>
 
-      <div>
-        <label for="opacitySlider">Opacity: </label>
-        <label for="opacitySlider">{{ opacity.value }}</label>
-        <mat-slider
-          #opacity
-          aria-label="units"
-          color="primary"
-          [max]="1"
-          [min]="0"
-          [step]="0.1"
-          thumbLabel
-          aria-labelledby="opacitySlider"
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="watermarkService.removeEl()"
         >
-        </mat-slider>
+          remove
+        </button>
       </div>
-
-      <div>
-        <label for="sizeSlider">Size: </label>
-        <label for="sizeSlider">{{ size.value }}</label>
-        <mat-slider
-          #size
-          aria-label="units"
-          color="primary"
-          [max]="16"
-          [min]="0"
-          [step]="0.1"
-          thumbLabel
-          aria-labelledby="sizeSlider"
-        >
-        </mat-slider>
-      </div>
-
-      <div>
-        <label for="rotationSlider">Rotaion: </label>
-        <label for="rotationSlider">{{ rotation.value }}</label>
-        <mat-slider
-          #rotation
-          aria-label="units"
-          color="primary"
-          [max]="360"
-          [min]="0"
-          [step]="1"
-          thumbLabel
-          aria-labelledby="rotationSlider"
-        >
-        </mat-slider>
-      </div>
-
-      <button
-        mat-stroked-button
-        color="accent"
-        (click)="watermarkService.removeEl()"
-      >
-        remove
-      </button>
     </mat-card-content>
   </mat-card>
 </div>

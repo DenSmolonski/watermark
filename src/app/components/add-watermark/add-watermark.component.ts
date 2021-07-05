@@ -1,10 +1,12 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {
   IElementOpt,
+  IImgUpdateOptions,
+  ITextUpdateOptions,
   WatermarkService,
 } from 'src/app/services/watermark.service';
 import { FileData } from 'src/app/store/reducers/files.reducer';
@@ -35,6 +37,18 @@ export class AddWatermarkComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params['id'];
     this.$file = this.store.select(selectFile, { id: this.id });
+    this.generateTextForm({
+      name: 'name',
+      top: 100,
+      left: 100,
+      text: 'sample text',
+      fontFamily: 'Arial, sans-serif',
+      fill: '#FFFFFF',
+      fit: 'one',
+      opacity: 1,
+      rotation: 0,
+      fontSize: 42,
+    });
   }
 
   ngOnInit(): void {
@@ -59,6 +73,7 @@ export class AddWatermarkComponent implements OnInit {
           case '':
             this.elName = '';
             this.showCard = false;
+            this.formGroup = new FormGroup({});
             break;
           case this.elName:
             this.showCard = true;
@@ -103,5 +118,51 @@ export class AddWatermarkComponent implements OnInit {
 
     this.positionTopCard = `${moreY ? alternativeY : defaultY}px`;
     this.positionLeftCard = `${moreX ? alternativeX : defaultX}px`;
+  }
+
+  private generateTextForm(props: ITextUpdateOptions): void {
+    const {
+      opacity,
+      rotation,
+      fit,
+      left,
+      top,
+      text,
+      fontFamily,
+      fill,
+      fontSize,
+    } = props;
+    const opt = this.getCommotControls(opacity, rotation, fit, left, top);
+    this.formGroup = new FormGroup({
+      ...opt,
+      text: new FormControl(text, []),
+      searchFontFamily: new FormControl(fontFamily, []),
+      fontFamily: new FormControl(fontFamily, []),
+      fill: new FormControl(fill, []),
+      fontSize: new FormControl(fontSize, []),
+    });
+  }
+
+  private generateImgForm(props: IImgUpdateOptions): void {
+    const { opacity, rotation, fit, left, top, scaleToWidth } = props;
+    const opt = this.getCommotControls(opacity, rotation, fit, left, top);
+    this.formGroup = new FormGroup({
+      ...opt,
+      scaleToWidth: new FormControl(scaleToWidth, []),
+    });
+  }
+
+  private getCommotControls(
+    opacity: number,
+    rotation: number,
+    fit: string,
+    left: number,
+    top: number
+  ): { [key: string]: FormControl } {
+    return {
+      opacity: new FormControl(opacity, []),
+      rotation: new FormControl(rotation, []),
+      fit: new FormControl(fit, []),
+    };
   }
 }

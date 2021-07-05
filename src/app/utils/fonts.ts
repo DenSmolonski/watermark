@@ -39,7 +39,7 @@ const fonts: Array<string> = [
 
 export const availableFonts = (): Array<IFontItem> => {
   return fonts.map((font) => ({
-    id: font.replace(' ', ''),
+    id: font,
     name: font,
     fontFamily: font,
   }));
