@@ -1,0 +1,44 @@
+.card {
+  position: relative;
+  padding: 20px;
+
+  &:hover {
+    cursor: pointer;
+    .cover-image {
+      display: block;
+    }
+  }
+}
+
+.close-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+.edit-icon {
+  position: absolute;
+  cursor: pointer;
+  color: white;
+  opacity: 0.9;
+  left: 40%;
+  top: 40%;
+}
+
+.card-image {
+  max-width: 130px;
+  border-radius: 8px;
+}
+
+.cover-image {
+  display: none;
+  position: absolute;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  left: 20px;
+  top: 20px;
+  width: calc(100% - 40px);
+  height: calc(100% - 43px);
+  z-index: 1111;
+}

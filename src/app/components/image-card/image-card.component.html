@@ -1,0 +1,9 @@
+<div class="card">
+  <img class="card-image" src="{{ file.fileAsDataUrl }}" />
+  <div class="cover-image" (click)="edit()">
+    <mat-icon class="edit-icon">branding_watermark</mat-icon>
+  </div>
+  <mat-icon color="primary" class="close-icon" (click)="delete()"
+    >cancel</mat-icon
+  >
+</div>

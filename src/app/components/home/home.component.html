@@ -1,0 +1,9 @@
+<mat-grid-list cols="6" gutterSize="20px" rowHeight="250px">
+  <mat-grid-tile
+    *ngFor="let item of $files | async as list"
+    [colspan]="1"
+    [rowspan]="1"
+  >
+    <app-image-card [file]="item"></app-image-card>
+  </mat-grid-tile>
+</mat-grid-list>
