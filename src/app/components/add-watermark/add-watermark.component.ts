@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   IElementOpt,
   IImgUpdateOptions,
@@ -37,18 +38,6 @@ export class AddWatermarkComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params['id'];
     this.$file = this.store.select(selectFile, { id: this.id });
-    this.generateTextForm({
-      name: 'name',
-      top: 100,
-      left: 100,
-      text: 'sample text',
-      fontFamily: 'Arial, sans-serif',
-      fill: '#FFFFFF',
-      fit: 'one',
-      opacity: 1,
-      rotation: 0,
-      fontSize: 42,
-    });
   }
 
   ngOnInit(): void {
@@ -73,7 +62,6 @@ export class AddWatermarkComponent implements OnInit {
           case '':
             this.elName = '';
             this.showCard = false;
-            this.formGroup = new FormGroup({});
             break;
           case this.elName:
             this.showCard = true;
@@ -86,11 +74,22 @@ export class AddWatermarkComponent implements OnInit {
             break;
         }
       });
-    });
-  }
 
-  hasFocus(el: Element): boolean {
-    return document.activeElement === el;
+      this.watermarkService.updateOptions.subscribe((options) => {
+        switch (options.name) {
+          case '':
+            this.formGroup = new FormGroup({});
+            break;
+          case this.elName:
+            break;
+          default:
+            'fontFamily' in options
+              ? this.generateTextForm(options)
+              : this.generateImgForm(options);
+            break;
+        }
+      });
+    });
   }
 
   updatePosition(opt: IElementOpt): void {
@@ -121,18 +120,8 @@ export class AddWatermarkComponent implements OnInit {
   }
 
   private generateTextForm(props: ITextUpdateOptions): void {
-    const {
-      opacity,
-      rotation,
-      fit,
-      left,
-      top,
-      text,
-      fontFamily,
-      fill,
-      fontSize,
-    } = props;
-    const opt = this.getCommotControls(opacity, rotation, fit, left, top);
+    const { opacity, rotation, fit, text, fontFamily, fill, fontSize } = props;
+    const opt = this.getCommotControls(opacity, rotation, fit);
     this.formGroup = new FormGroup({
       ...opt,
       text: new FormControl(text, []),
@@ -141,23 +130,29 @@ export class AddWatermarkComponent implements OnInit {
       fill: new FormControl(fill, []),
       fontSize: new FormControl(fontSize, []),
     });
+
+    this.formGroup.valueChanges.subscribe((values) => {
+      this.watermarkService.updateText(Object.assign(props, values));
+    });
   }
 
   private generateImgForm(props: IImgUpdateOptions): void {
-    const { opacity, rotation, fit, left, top, scaleToWidth } = props;
-    const opt = this.getCommotControls(opacity, rotation, fit, left, top);
+    const { opacity, rotation, fit, scaleToWidth } = props;
+    const opt = this.getCommotControls(opacity, rotation, fit);
     this.formGroup = new FormGroup({
       ...opt,
       scaleToWidth: new FormControl(scaleToWidth, []),
+    });
+
+    this.formGroup.valueChanges.subscribe((values) => {
+      this.watermarkService.updateImg(Object.assign(props, values));
     });
   }
 
   private getCommotControls(
     opacity: number,
     rotation: number,
-    fit: string,
-    left: number,
-    top: number
+    fit: string
   ): { [key: string]: FormControl } {
     return {
       opacity: new FormControl(opacity, []),

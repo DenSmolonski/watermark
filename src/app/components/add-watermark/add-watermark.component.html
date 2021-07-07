@@ -14,6 +14,7 @@
           <mat-form-field appearance="outline">
             <mat-label>Text</mat-label>
             <textarea
+              style="white-space: pre-wrap"
               #textArea
               matInput
               formControlName="text"
@@ -21,14 +22,6 @@
               rows="1"
             ></textarea>
           </mat-form-field>
-
-          <button
-            style="max-width: 50px; margin-bottom: 10px"
-            *ngIf="hasFocus(textArea)"
-            mat-stroked-button
-          >
-            + &#169;
-          </button>
         </div>
 
         <div *ngIf="formGroup.contains('fill')">
@@ -38,7 +31,7 @@
           </mat-form-field>
         </div>
 
-        <mat-form-field>
+        <mat-form-field *ngIf="formGroup.contains('fontFamily')">
           <mat-select
             formControlName="fontFamily"
             placeholder="Font"
@@ -92,12 +85,29 @@
             #size
             aria-label="units"
             color="primary"
-            [max]="16"
+            [max]="1000"
             [min]="0"
-            [step]="0.1"
+            [step]="1"
             thumbLabel
             formControlName="fontSize"
             aria-labelledby="sizeSlider"
+          >
+          </mat-slider>
+        </div>
+
+        <div *ngIf="formGroup.contains('scaleToWidth')">
+          <label for="scaleToWidth">Scale: </label>
+          <label for="scaleToWidth">{{ scale.value }}</label>
+          <mat-slider
+            #scale
+            aria-label="units"
+            color="primary"
+            [max]="2000"
+            [min]="0"
+            [step]="0.1"
+            thumbLabel
+            formControlName="scaleToWidth"
+            aria-labelledby="scaleToWidth"
           >
           </mat-slider>
         </div>

@@ -64,6 +64,25 @@ const defaultImgWatermakOption = (
   rotation: 0,
 });
 
+const defaultVisibility = {
+  bl: false,
+  mb: false,
+  br: false,
+  ml: false,
+  mr: false,
+  mt: false,
+  mtr: false,
+  tl: false,
+  tr: false,
+};
+
+const defaultSelectedStyleBorder = {
+  borderOpacityWhenMoving: 1,
+  borderColor: '#ff4081',
+  padding: 1,
+  borderDashArray: [5],
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -76,6 +95,8 @@ export class WatermarkService {
   applyWatermarkToAllImage: EventEmitter<
     Array<IImgUpdateOptions | ITextUpdateOptions>
   > = new EventEmitter();
+  updateOptions: EventEmitter<IImgUpdateOptions | ITextUpdateOptions> =
+    new EventEmitter();
   onMouseDownEl: EventEmitter<void> = new EventEmitter();
   onMouseUpEl: EventEmitter<IElementOpt | null> = new EventEmitter();
   onMoveEl: EventEmitter<void> = new EventEmitter();
@@ -134,25 +155,30 @@ export class WatermarkService {
     const options = defaultTextWatermakOption(name);
     const text = new fabric.Text(options.text, {
       ...options,
-      borderOpacityWhenMoving: 1,
-      borderColor: '#ff4081',
-      padding: 5,
-      borderDashArray: [5],
+      ...defaultSelectedStyleBorder,
     });
 
-    text.setControlsVisibility({
-      bl: false,
-      mb: false,
-      br: false,
-      ml: false,
-      mr: false,
-      mt: false,
-      mtr: false,
-      tl: false,
-      tr: false,
-    });
+    text.setControlsVisibility(defaultVisibility);
 
     this.canvas?.add(text);
+    this.canvas?.renderAll();
+    this.updateOptions.emit(options);
+  }
+
+  updateText(options: ITextUpdateOptions): void {
+    const text = this.canvas?.getActiveObject() as fabric.Text;
+
+    if (!text) {
+      return;
+    }
+
+    text.set('fontFamily', options.fontFamily);
+    text.set('text', options.text);
+    text.set('fill', options.fill);
+    text.set('opacity', options.opacity);
+    text.set('fontSize', options.fontSize);
+    text.rotate(options.rotation);
+
     this.canvas?.renderAll();
   }
 
@@ -177,42 +203,34 @@ export class WatermarkService {
         imgWatermark.opacity = options.opacity;
         imgWatermark.rotate(options.rotation);
         imgWatermark.scaleToWidth(options.scaleToWidth);
-        imgWatermark.setOptions({
-          borderOpacityWhenMoving: 1,
-          borderColor: '#ff4081',
-          padding: 5,
-          borderDashArray: [5],
-        });
+        imgWatermark.setOptions(defaultSelectedStyleBorder);
 
-        imgWatermark.setControlsVisibility({
-          bl: false,
-          mb: false,
-          br: false,
-          ml: false,
-          mr: false,
-          mt: false,
-          mtr: false,
-          tl: false,
-          tr: false,
-        });
+        imgWatermark.setControlsVisibility(defaultVisibility);
         this.canvas.add(imgWatermark);
         this.canvas.renderAll();
+        this.updateOptions.emit(options);
       });
     };
 
     img.src = imgDataUrl;
   }
 
+  updateImg(options: IImgUpdateOptions): void {
+    const text = this.canvas?.getActiveObject() as fabric.Image;
+
+    if (!text) {
+      return;
+    }
+
+    text.set('opacity', options.opacity);
+    text.scaleToWidth(options.scaleToWidth);
+    text.rotate(options.rotation);
+
+    this.canvas?.renderAll();
+  }
+
   hasObjects(): boolean {
     return !!this.canvas && !!this.canvas.getObjects().length;
-  }
-
-  updateTextOptions(props: ITextUpdateOptions): void {
-    const { name } = props;
-  }
-
-  updateImageOptions(props: IImgUpdateOptions): void {
-    const { name } = props;
   }
 
   applyWatermartToAll(): void {
