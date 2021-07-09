@@ -13,10 +13,19 @@
     <button
       *ngIf="!isPage('/image/') && ($filesExist | async)"
       color="accent"
+      style="margin-right: 10px"
       mat-flat-button
       (click)="clearAllFiles()"
     >
       clear
+    </button>
+    <button
+      *ngIf="!isPage('/image/') && ($filesExist | async)"
+      color="accent"
+      mat-flat-button
+      (click)="download()"
+    >
+      downlaod
     </button>
     <button
       color="accent"
@@ -37,9 +46,9 @@
       add image
     </button>
     <button
-      *ngIf="isPage('/image/') && watermarkService.hasObjects()"
+      *ngIf="isPage('/image/')"
       color="accent"
-      (click)="watermarkService.resetWatermark()"
+      (click)="reset()"
       mat-flat-button
     >
       reset
@@ -54,7 +63,12 @@
     >
       upload
     </button>
-    <button *ngIf="isPage('/image/')" color="accent" mat-flat-button>
+    <button
+      *ngIf="isPage('/image/')"
+      color="accent"
+      mat-flat-button
+      (click)="apply()"
+    >
       apply
     </button>
   </div>

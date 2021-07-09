@@ -53,7 +53,7 @@
           </mat-select>
         </mat-form-field>
 
-        <div style="margin-bottom: 20px">
+        <div *ngIf="formGroup.contains('fit')" style="margin-bottom: 20px">
           <mat-button-toggle-group formControlName="fit">
             <mat-button-toggle value="one">&bull;</mat-button-toggle>
             <mat-button-toggle value="two">&#8759;</mat-button-toggle>
@@ -66,7 +66,6 @@
           <label for="opacitySlider">{{ opacity.value }}</label>
           <mat-slider
             #opacity
-            aria-label="units"
             color="primary"
             [max]="1"
             [min]="0"
@@ -129,11 +128,7 @@
           </mat-slider>
         </div>
 
-        <button
-          mat-stroked-button
-          color="accent"
-          (click)="watermarkService.removeEl()"
-        >
+        <button mat-stroked-button color="accent" (click)="removeEl()">
           remove
         </button>
       </div>

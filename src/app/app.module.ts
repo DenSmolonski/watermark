@@ -18,11 +18,14 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { appReducer } from './store';
 import { HomeComponent } from './components/home/home.component';
 import { ImageCardComponent } from './components/image-card/image-card.component';
 import { AddWatermarkComponent } from './components/add-watermark/add-watermark.component';
+import { ApplyToAllComponent } from './components/apply-to-all/apply-to-all.component';
+import { DownloadDialogComponent } from './components/download-dialog/download-dialog.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +33,8 @@ import { AddWatermarkComponent } from './components/add-watermark/add-watermark.
     HomeComponent,
     ImageCardComponent,
     AddWatermarkComponent,
+    ApplyToAllComponent,
+    DownloadDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,6 +53,7 @@ import { AddWatermarkComponent } from './components/add-watermark/add-watermark.
     MatButtonToggleModule,
     NgxMatSelectSearchModule,
     MatSelectModule,
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

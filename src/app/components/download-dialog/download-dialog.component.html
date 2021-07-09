@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Download images</h2>
+<mat-dialog-content class="mat-typography">
+  <h3>
+    You can download files by one or click on button download and get zip file
+    with all files with watermark!
+  </h3>
+
+  <ul>
+    <ng-container *ngFor="let file of files">
+      <li *ngIf="file?.canvasAsDataUrl">
+        <a href="#" (click)="downloadFile($event, file)">{{
+          file.file.name
+        }}</a>
+      </li>
+    </ng-container>
+  </ul>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button cdkFocusInitial (click)="download()">
+    download
+  </button>
+  <button mat-button (click)="close()">close</button>
+</mat-dialog-actions>

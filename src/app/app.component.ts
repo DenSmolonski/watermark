@@ -1,12 +1,20 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { pushFile, resetFiles } from './store/actions/files.actions';
 import { AppState } from './store/types';
 import { v4 as uuidv4 } from 'uuid';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { selectFilesExist } from './store/selectors/files.selectors';
-import { WatermarkService } from './services/watermark.service';
+import {
+  selectFiles,
+  selectFilesExist,
+} from './store/selectors/files.selectors';
+import { EventsService } from './services/events.service';
+import * as JSZip from 'jszip';
+import * as FileSaver from 'file-saver';
+import { FileData } from './store/reducers/files.reducer';
+import { MatDialog } from '@angular/material/dialog';
+import { DownloadDialogComponent } from './components/download-dialog/download-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -15,13 +23,18 @@ import { WatermarkService } from './services/watermark.service';
 })
 export class AppComponent {
   public $filesExist: Observable<boolean>;
+  public files: Array<FileData> = [];
 
   constructor(
     private router: Router,
     private readonly store: Store<AppState>,
-    public watermarkService: WatermarkService
+    private eventsService: EventsService,
+    private dialog: MatDialog
   ) {
     this.$filesExist = this.store.select(selectFilesExist);
+    this.store.select(selectFiles).subscribe((files) => {
+      this.files = files;
+    });
   }
 
   isPage(partUrl: string): boolean {
@@ -59,7 +72,19 @@ export class AppComponent {
   }
 
   addText(): void {
-    this.watermarkService.addText();
+    this.eventsService.addText();
+  }
+
+  reset(): void {
+    this.eventsService.resetWatermark();
+  }
+
+  apply(): void {
+    this.eventsService.applyWatermark();
+  }
+
+  download(): void {
+    this.dialog.open(DownloadDialogComponent);
   }
 
   addImage(imgFile: any): void {
@@ -67,7 +92,7 @@ export class AppComponent {
       const file = imgFile.target.files[0];
       let reader = new FileReader();
       reader.onload = (e: any) => {
-        this.watermarkService.addImage(reader.result as string);
+        this.eventsService.addImage(reader.result as string);
       };
       reader.readAsDataURL(file);
       imgFile.target.value = null;

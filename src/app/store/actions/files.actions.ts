@@ -2,7 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import {
   IImgUpdateOptions,
   ITextUpdateOptions,
-} from 'src/app/services/watermark.service';
+} from 'src/app/components/add-watermark/add-watermark.component';
 import { FileData } from '../reducers/files.reducer';
 
 export const pushFile = createAction(
@@ -15,18 +15,18 @@ export const deleteFile = createAction(
 );
 export const addWatermark = createAction(
   '[Files] add watermark',
-  props<{ fileId: string; watermark: ITextUpdateOptions | IImgUpdateOptions }>()
-);
-export const updateWatermark = createAction(
-  '[Files] update watermark',
-  props<{ fileId: string; watermark: ITextUpdateOptions | IImgUpdateOptions }>()
+  props<{
+    fileId: string;
+    canvasAsDataUrl: string;
+    watermark: Array<ITextUpdateOptions | IImgUpdateOptions>;
+  }>()
 );
 export const removeAllWateramrk = createAction(
   '[Files] remove all watermark',
   props<{ fileId: string }>()
 );
-export const removeWateramrk = createAction(
-  '[Files] remove watermark',
-  props<{ fileId: string; watermarkName: string }>()
+export const applyWateramrkToAll = createAction(
+  '[Files] apply watermark to all',
+  props<{ fileId: string }>()
 );
 export const resetFiles = createAction('[Files] reset');
